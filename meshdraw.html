@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="three.js"></script>
+    <script src="PLYLoader.js"></script>
+    <script src="OrbitControls.js"></script>
+</head>
+<body>
+<script>
+        const renderer = new THREE.WebGLRenderer;
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+        const light = new THREE.PointLight(0xFFFFFF);
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.addEventListener('change',render);
+        light.position.set(0.5,-10,4);
+        scene.add(light);
+        camera.position.set(1, -20, 5);
+        camera.lookAt(new THREE.Vector3(0,0,0));
+        const meshLoader = new THREE.PLYLoader();
+        let mesh;
+        document.body.appendChild( renderer.domElement );
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        meshLoader.load('pecksm.nxz-small.ply', function(geometry){
+            const material = new THREE.MeshLambertMaterial({color:"gray"});
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+            render()
+        });
+
+        function render(){
+            requestAnimationFrame( render );
+            renderer.render(scene, camera);
+        };
+//         animate()
+    </script>
+</body>
+</html>
