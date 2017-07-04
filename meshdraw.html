@@ -58,6 +58,19 @@
             requestAnimationFrame( render );
             renderer.render(scene, camera);
         };
+
+        function adjacency(geom){
+            // Create an array of empty arrays, one for each vertex
+            let facesByVertex = [...Array(geom.vertices.length).keys()].map(i=>[]);
+            // Add faces to the array position for each vertex they touch
+            for (face of geom.faces){
+                for (vertex of [face.a, face.b, face.c]){
+                    facesByVertex[vertex].push(face);
+                }
+            }
+            return facesByVertex;
+        }
+
 //         animate()
     </script>
 </body>
