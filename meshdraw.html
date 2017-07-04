@@ -14,10 +14,11 @@
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000 );
         const light = new THREE.PointLight(0xFFFFFF);
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        const raycaster = new THREE.Raycaster();
         controls.addEventListener('change',render);
         light.position.set(0.5,-10,4);
         scene.add(light);
-        camera.position.set(1, -20, 5);
+        camera.position.set(1, -5, 5);
         camera.lookAt(new THREE.Vector3(0,0,0));
         const meshLoader = new THREE.PLYLoader();
         let mesh;
@@ -29,6 +30,19 @@
             scene.add(mesh);
             render()
         });
+
+        renderer.domElement.addEventListener('mousedown', addPolyPoint);
+
+        function addPolyPoint(evt) {
+            raycaster.setFromCamera(
+                new THREE.Vector2(
+                    ( event.clientX / window.innerWidth ) * 2 - 1, // Mouse position normalized to between -1 and +1
+                    - ( event.clientY / window.innerHeight ) * 2 + 1),
+                camera
+            );
+            let intersects = raycaster.intersectObjects( [ mesh ] );
+            console.log(intersects);
+        };
 
         function render(){
             requestAnimationFrame( render );
