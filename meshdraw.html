@@ -15,6 +15,7 @@
         const light = new THREE.PointLight(0xFFFFFF);
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         const raycaster = new THREE.Raycaster();
+        const polypoints = [];
         controls.addEventListener('change',render);
         light.position.set(0.5,-10,4);
         scene.add(light);
@@ -24,8 +25,12 @@
         let mesh;
         document.body.appendChild( renderer.domElement );
         renderer.setSize( window.innerWidth, window.innerHeight );
-        meshLoader.load('pecksm.nxz-small.ply', function(geometry){
-            const material = new THREE.MeshLambertMaterial({color:"gray"});
+        meshLoader.load('pecksm.nxz-small.ply', function(bufferGeometry){
+            // use normal geom instead of buffergeometry b/c easier to color faces
+            let geometry = new THREE.Geometry().fromBufferGeometry( bufferGeometry );
+            const material = new THREE.MeshPhongMaterial({color: "grey",
+                vertexColors: THREE.FaceColors,
+                side: THREE.DoubleSide});
             mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
             render()
@@ -40,8 +45,13 @@
                     - ( event.clientY / window.innerHeight ) * 2 + 1),
                 camera
             );
-            let intersects = raycaster.intersectObjects( [ mesh ] );
-            console.log(intersects);
+            let intersects = raycaster.intersectObjects([mesh]);
+            if (intersects.length > 0) {
+                polypoints.push(intersects[0]);
+                intersects[0].face.color.set("blue");
+                mesh.geometry.colorsNeedUpdate = true;
+            };
+            console.log(polypoints);
         };
 
         function render(){
