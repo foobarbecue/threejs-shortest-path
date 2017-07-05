@@ -67,19 +67,20 @@
                 let face = geom.faces[n];
                 for (vertex of [face.a, face.b, face.c]){
                     // Faces have no id. Add one to make them easier to work with later.
-                    face.id = n;
+                    face.connectedFaces = [];
                     facesByConnectedVertex[vertex].push(face);
                 }
             }
 
-            let facesByConnectedFace = [...Array(geom.faces.length).keys()].map(i=>[]);
             for (let vertexFaces of facesByConnectedVertex){
-                for (let face of vertexFaces){
-                    facesByConnectedFace[face.id] = vertexFaces;
+                // Check that you aren't missing connections here.
+                for (face of vertexFaces){
+                    face.connectedFaces = face.connectedFaces.concat(vertexFaces);
                 }
             }
-            return facesByConnectedFace;
         }
+
+        adjacency();
 
 //         animate()
     </script>
