@@ -77,9 +77,12 @@
                 for (face of vertexFaces){
                     // Might be more efficient to deduplicate at the end?
                     face.connectedFaces = face.connectedFaces.union(vertexFaces);
+                    // Don't keep link to self
+                    face.connectedFaces.delete(face);
                 }
             }
         }
+
 
         function bfs(source, destination){
             debugger
@@ -98,6 +101,19 @@
                         Q.push(face);
                     }
                 });
+            }
+        }
+
+        function traverseParents(face){
+            let familyLine;
+            if (familyLine === undefined){
+                familyLine = [];
+            };
+            familyLine.push(face);
+            if (face.hasOwnProperty('parent')){
+                traverseParents(face.parent)
+            } else {
+                return face
             }
         }
 
