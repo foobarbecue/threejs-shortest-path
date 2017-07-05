@@ -61,14 +61,24 @@
 
         function adjacency(geom){
             // Create an array of empty arrays, one for each vertex
-            let facesByVertex = [...Array(geom.vertices.length).keys()].map(i=>[]);
+            let facesByConnectedVertex = [...Array(geom.vertices.length).keys()].map(i=>[]);
             // Add faces to the array position for each vertex they touch
-            for (face of geom.faces){
+            for (n = 0; n < geom.faces.length; n++){
+                let face = geom.faces[n];
                 for (vertex of [face.a, face.b, face.c]){
-                    facesByVertex[vertex].push(face);
+                    // Faces have no id. Add one to make them easier to work with later.
+                    face.id = n;
+                    facesByConnectedVertex[vertex].push(face);
                 }
             }
-            return facesByVertex;
+
+            let facesByConnectedFace = [...Array(geom.faces.length).keys()].map(i=>[]);
+            for (let vertexFaces of facesByConnectedVertex){
+                for (let face of vertexFaces){
+                    facesByConnectedFace[face.id] = vertexFaces;
+                }
+            }
+            return facesByConnectedFace;
         }
 
 //         animate()
