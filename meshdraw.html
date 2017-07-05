@@ -59,29 +59,36 @@
             renderer.render(scene, camera);
         };
 
-        function adjacency(geom){
-            // Create an array of empty arrays, one for each vertex
-            let facesByConnectedVertex = [...Array(geom.vertices.length).keys()].map(i=>[]);
-            // Add faces to the array position for each vertex they touch
-            for (n = 0; n < geom.faces.length; n++){
-                let face = geom.faces[n];
+        function addAdjacencyDataToFaces(geom){
+            // Create an array of sets, one for each vertex, to store what faces each vertex is connected to
+            // To do that, wse every single ES6 feature in a single line. Woah nelly
+            let verticesWithAdjFaces = [...Array(geom.vertices.length).keys()].map(i=>new Set());
+            for (face of geom.faces){
+                face.connectedFaces = new Set();
+            }
+
+            for (face of geom.faces){
                 for (vertex of [face.a, face.b, face.c]){
-                    // Faces have no id. Add one to make them easier to work with later.
-                    face.connectedFaces = [];
-                    facesByConnectedVertex[vertex].push(face);
+                    verticesWithAdjFaces[vertex].add(face);
                 }
             }
 
-            for (let vertexFaces of facesByConnectedVertex){
-                // Check that you aren't missing connections here.
+            for (vertexFaces of verticesWithAdjFaces){
                 for (face of vertexFaces){
-                    face.connectedFaces = face.connectedFaces.concat(vertexFaces);
+                    // Might be more efficient to deduplicate at the end?
+                    face.connectedFaces = face.connectedFaces.union(vertexFaces);
                 }
             }
         }
 
-        adjacency();
-
+        // Convenience function from https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Set
+        Set.prototype.union = function(setB) {
+            var union = new Set(this);
+            for (var elem of setB) {
+                union.add(elem);
+            }
+            return union;
+        }
 //         animate()
     </script>
 </body>
