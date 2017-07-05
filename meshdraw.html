@@ -81,6 +81,26 @@
             }
         }
 
+        function bfs(source, destination){
+            debugger
+            S = new Set();
+            Q = [];
+            Q.push(source);
+            while(Q.length > 0){
+                current = Q.shift();
+                if (current == destination){
+                    return current;
+                }
+                current.connectedFaces.forEach(function(face) {
+                    if (!S.has(face)) {
+                        S.add(face);
+                        face.parent = current;
+                        Q.push(face);
+                    }
+                });
+            }
+        }
+
         // Convenience function from https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Set
         Set.prototype.union = function(setB) {
             var union = new Set(this);
