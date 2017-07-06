@@ -85,11 +85,11 @@
 
 
         function bfs(source, destination){
-            debugger
-            S = new Set();
+            S = new Set([source]);
             Q = [];
             Q.push(source);
             while(Q.length > 0){
+                renderer.render(scene, camera);
                 current = Q.shift();
                 if (current == destination){
                     return current;
@@ -97,6 +97,8 @@
                 current.connectedFaces.forEach(function(face) {
                     if (!S.has(face)) {
                         S.add(face);
+                        face.color.setHSL(S.size / 200 % 1, 0.5, 0.5);
+                        mesh.geometry.colorsNeedUpdate = true;
                         face.parent = current;
                         Q.push(face);
                     }
@@ -104,16 +106,11 @@
             }
         }
 
-        function traverseParents(face){
-            let familyLine;
-            if (familyLine === undefined){
-                familyLine = [];
-            };
+        function traverseParents(face, familyLine){
+            var familyLine = familyLine || [];
             familyLine.push(face);
             if (face.hasOwnProperty('parent')){
-                traverseParents(face.parent)
-            } else {
-                return face
+                traverseParents(face.parent, familyLine)
             }
         }
 
