@@ -57,7 +57,7 @@
             camera.lookAt(new THREE.Vector3(0,0,0));
             document.body.appendChild( renderer.domElement );
             renderer.setSize( window.innerWidth, window.innerHeight );
-            meshLoader.load('pecksm.nxz-small.ply', function(bufferGeometry){
+            meshLoader.load('boulder.ply', function(bufferGeometry){
                 // use normal geom instead of buffergeometry b/c easier to color faces
                 let geometry = new THREE.Geometry().fromBufferGeometry( bufferGeometry );
                 const material = new THREE.MeshPhongMaterial({color: "grey",
