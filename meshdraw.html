@@ -42,7 +42,10 @@
                 bfs(...clickedFaces.slice(-2));
                 let familyLine = [];
                 traverseParents(clickedFaces.slice(-1)[0], familyLine);
-                console.log(familyLine);
+                familyLine.forEach(function(face){
+                    face.color.set("red");
+                    mesh.geometry.colorsNeedUpdate = true;
+                })
             };
         };
 
@@ -111,7 +114,7 @@
                 current.connectedFaces.forEach(function(face) {
                     if (!S.has(face)) {
                         S.add(face);
-                        face.color.setHSL(S.size / 200 % 1, 0.5, 0.5);
+                        face.color.setHSL(0.5, S.size / 200 % 1, 0.5);
                         mesh.geometry.colorsNeedUpdate = true;
                         face.parent = current;
                         Q.push(face);
@@ -138,7 +141,7 @@
         }
 
         setup();
-//         animate()
+
     </script>
 </body>
 </html>
